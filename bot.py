@@ -19,7 +19,7 @@ if BOT_TOKEN == "PASTE_YOUR_BOT_TOKEN_HERE" or not BOT_TOKEN:
 if not isinstance(ADMIN_CHAT_ID_INT, int) or ADMIN_CHAT_ID_INT == 0:
     raise SystemExit("ADMIN_CHAT_ID_INT is not set in bot.py")
 
-if not WEBAPP_URL or WEBAPP_URL.startswith("https://sp-web-dun.vercel.app/site/index.html"):
+if not WEBAPP_URL:
     raise SystemExit("WEBAPP_URL is not set in bot.py")
 
 bot = Bot(token=BOT_TOKEN)
