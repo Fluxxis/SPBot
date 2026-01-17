@@ -21,7 +21,7 @@ async def start(message: types.Message):
 
     await message.answer_photo(
         photo=types.FSInputFile("assets/1.png"),
-        caption="Нажми кнопку ниже, чтобы войти через WebApp",
+        caption="Нажми кнопку ниже, чтобы войти в Starpets",
         reply_markup=kb.as_markup(),
     )
 
