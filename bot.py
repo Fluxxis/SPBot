@@ -1,32 +1,33 @@
-import os
 import asyncio
-from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import WebAppInfo
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-load_dotenv()
+# ⚠️ НЕБЕЗОПАСНО: значения зашиты в код.
+# Если этот файл попадет в чужие руки (GitHub/архив/логи) — токен утечет и бот угонят.
+# Делай так только если ты понимаешь риск.
 
-BOT_TOKEN = os.getenv("8068075516:AAGQywoJP1uUyC4XxV4jxHJ6Xhk39ScKFZ4")
-ADMIN_CHAT_ID = os.getenv("7225974704")
-WEBAPP_URL = os.getenv("https://sp-web-dun.vercel.app/site/index.html")
+# ВСТАВЬ СВОИ ДАННЫЕ СЮДА
+BOT_TOKEN = "8068075516:AAHE20HCJmiC1hD-SKmyx1-TxhJWNi4PWPs"
+ADMIN_CHAT_ID_INT = 7225974704  # например: 7225974704
+WEBAPP_URL = "https://sp-web-dun.vercel.app/site/index.html"
 
-if not BOT_TOKEN:
-    raise SystemExit("Missing BOT_TOKEN")
-if not ADMIN_CHAT_ID:
-    raise SystemExit("Missing ADMIN_CHAT_ID")
-if not WEBAPP_URL:
-    raise SystemExit("Missing WEBAPP_URL")
+if BOT_TOKEN == "PASTE_YOUR_BOT_TOKEN_HERE" or not BOT_TOKEN:
+    raise SystemExit("BOT_TOKEN is not set in bot.py")
 
-ADMIN_CHAT_ID_INT = int(ADMIN_CHAT_ID)
+if not isinstance(ADMIN_CHAT_ID_INT, int) or ADMIN_CHAT_ID_INT == 0:
+    raise SystemExit("ADMIN_CHAT_ID_INT is not set in bot.py")
+
+if not WEBAPP_URL or WEBAPP_URL.startswith("https://sp-web-dun.vercel.app/site/index.html"):
+    raise SystemExit("WEBAPP_URL is not set in bot.py")
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
 @dp.message(Command("start"))
 async def start(message: types.Message):
-    # В приватном чате chat.id == user id. Мы прокидываем chatId в URL, чтобы WebApp/backend знали, откуда пользователь пришёл.
+    # In a private chat, chat.id == user id.
     chat_id = message.chat.id
 
     kb = InlineKeyboardBuilder()
@@ -41,8 +42,12 @@ async def start(message: types.Message):
         reply_markup=kb.as_markup(),
     )
 
-    # Уведомление админу о старте (опционально, но удобно)
-    await bot.send_message(ADMIN_CHAT_ID_INT, f"/start from @{message.from_user.username} (id={message.from_user.id})")
+    # Optional: notify admin
+    username = message.from_user.username or "(no_username)"
+    await bot.send_message(
+        ADMIN_CHAT_ID_INT,
+        f"/start from @{username} (id={message.from_user.id})"
+    )
 
 async def main():
     await dp.start_polling(bot)
