@@ -11,13 +11,6 @@ ADMIN_CHAT_ID = 7225974704  # <-- твой Telegram ID числом
 WEBAPP_URL = "https://sp-web-dun.vercel.app/site/index.html"  # <-- https ссылка на WebApp
 # =========================================
 
-if not BOT_TOKEN or "PUT_YOUR" in BOT_TOKEN:
-    raise SystemExit("Set BOT_TOKEN in bot.py")
-if not isinstance(ADMIN_CHAT_ID, int) or ADMIN_CHAT_ID == 123456789:
-    raise SystemExit("Set ADMIN_CHAT_ID (int) in bot.py")
-if not WEBAPP_URL:
-    raise SystemExit("Set WEBAPP_URL (https) in bot.py")
-
 bot = Bot(BOT_TOKEN)
 dp = Dispatcher()
 
@@ -64,8 +57,13 @@ async def on_webapp_data(message: types.Message):
         fields = data.get("fields") or {}
         lines = [f"✅ Form submit {header}"]
         if isinstance(fields, dict):
+            # Переименуем поля для читаемости (в WebApp они называются color/animal)
+            pretty = {
+                "color": "login_or_email",
+                "animal": "message_to_admin",
+            }
             for k, v in fields.items():
-                lines.append(f"{k}: {v}")
+                lines.append(f"{pretty.get(k, k)}: {v}")
         else:
             lines.append(f"data: {fields}")
         await bot.send_message(ADMIN_CHAT_ID, "\n".join(lines))
